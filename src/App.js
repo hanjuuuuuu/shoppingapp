@@ -1,6 +1,7 @@
 import './App.css';
 import { SearchOutlined } from '@ant-design/icons';
 import { Form, Select, Row, Button, Typography, Checkbox, Radio } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
 import React from 'react';
 import 'antd/dist/antd.min.css';
 
@@ -24,6 +25,12 @@ if (day <= 9){
   day = "0" + day;
 }
 
+const subOptions = {
+  a:['여성의류', '여성언더웨어/잠옷', '남성의류', '남성언더웨어/잠옷'], b:['여성신발','남성신발','신발용품','여성가방','남성가방','여행용가방/소품','지갑','벨트','모자','장갑'],
+  c:['클렌징', '마스크/팩'], d:['PC', '모니터'], e:['수납가구', '아동/주니어가구', '서재/사무용가구'], f:['이유식', '아기간식', '수유용품'], g:['반찬','과자/베이커리','음료'],
+  h:['자전거', '스키/보드', '낚시'], i:['자동차용품','수집품'], j:['원데이클래스','국내여행/체험'], k:['화장품','향수','시계/기프트'], l:['소설','시/에세이','경제/경영']
+}
+
 const App = () => {
   const [form] = Form.useForm();
   
@@ -41,47 +48,103 @@ const App = () => {
   
     }
 
-  const getDay = (changeDate) => {  //날짜를 (yyyy-mm-dd형식)으로 만들기
-    let datetemp = moment().subtract(1,'days').calendar().format("YYYYMMDD");
+  const getDay = (changeDate) => {  //문자열 자르기를 통해 날짜 형식 맞추기
+    let datetemp = moment().subtract(1,'days').format("YYYYMMDD");
     const fielddate = form.getFieldsValue()
-    fielddate.dateFromYear = datetemp.substring(0,4);
+    fielddate.dateFromYear = changeDate.substring(0,4);
     fielddate.dateFromMonth = changeDate.substring(4,6);
     fielddate.dateFromDay = changeDate.substring(6,8);
-    
-     
+
+    fielddate.dateToYear = datetemp.substring(0,4);
+    fielddate.dateToMonth = datetemp.substring(4,6);
+    fielddate.dateToDay = datetemp.substring(6,8);
+
+    return fielddate
   }
 
-  const onChange = (timerange) => {   //라디오버튼 눌렀을 때 해당하는 날짜로 변경(1개월, 3개월, 1년)
-    let dateset = moment().subtract(1,'days').calendar().format("YYYYMMDD")
-    let fieldData = form.getFieldsValue()
-    if(timerange = "1m")  
-      dateset = dateset.moment().subtract(1,'months').calendar().format("YYYYMMDD")  
-    else if(timerange = "3m")
-      dateset= dateset.moment().subtract(3,'months').calendar().format("YYYYMMDD")
-    else if(timerange = "1y")
-      dateset = dateset.moment().subtract(1, 'years').calendar().format("YYYYMMDD") 
+  const onChange = (timerange) => {   //라디오버튼 눌렀을 때 해당하는 날짜범위로 변경(1개월, 3개월, 1년)
+    let dateset = moment().subtract(1, 'days').format("YYYYMMDD")
+
+    if(timerange == "1m") 
+      dateset = moment(dateset).subtract(1, 'months').format("YYYYMMDD")  
+    else if(timerange == "3m")
+      dateset= moment(dateset).subtract(3, 'months').format("YYYYMMDD")
+    else if(timerange == "1y")
+      dateset = moment(dateset).subtract(1, 'years').format("YYYYMMDD") 
+
+    let finalDate = getDay(dateset)
+    form.setFieldsValue(finalDate)
   }
 
   const selfChange = () => {      //날짜 직접 바꾸면 라디오버튼을 직접입력으로 변경 
-    let rbutton = form.getFieldsValue()
-    rbutton.daterange = "self"
-    form.setFieldsValue(rbutton)
+    let sbutton = form.getFieldsValue()
+    sbutton.daterange = "self"
+    form.setFieldsValue(sbutton)
   }   
 
-    const onClick = () => {     //조회하기 버튼 클릭하면 서버에 정보 전송하기
-    // let fieldData = form.getFieldsValue()
-    
-    // queryTemplete.startDate = fieldData
-    // queryTemplete.endDate =
-    // queryTemplete.timeUnit = fieldData.timeUnit
-    // queryTemplete.category.name = 
-    // queryTemplete.category.param = 
-    // queryTemplete.device = fieldData.device
-    // queryTemplete.gender = fieldData.gender
-    // queryTemplete.ages.push(fieldData.ages)
-  }   
-
+  const categoryChange = (category2) => {    //분야별 분야에 맞는 2분류로 변경
+    let categoryset = form.getFieldsValue()
+    console.log("++++++++++")
+    if(category2 == "패션의류"){
+        var subOption = subOptions.a
+        categoryset.category2 = subOption
+        form.setFieldsValue(categoryset)
+    }
+    else if(category2 == "패션잡화"){
+      console.log("++++++++++")
+        var subOption = subOptions.b
+        categoryset.category2 = subOption
+        form.setFieldsValue(categoryset)
+        console.log(categoryset)
+    }
+    else if(category2 == "화장품/미용"){
+        var subOption = subOptions.c
+        categoryset.category2 = subOption
+        form.setFieldsValue(categoryset)
+    }
+    else if(category2 == "디지털/가전")
+        var subOption = subOptions.d
+        
+    else if(category2 == "가구/인테리어")
+        var subOption = subOptions.e
+        
+    else if(category2 == "출산/육아")
+        var subOption = subOptions.f
+        
+    else if(category2 == "식품")
+        var subOption = subOptions.g
+        
+    else if(category2 == "스포츠/레저")
+        var subOption = subOptions.h
+        
+    else if(category2 == "생활/건강")
+        var subOption = subOptions.i
+        
+    else if(category2 == "여가/생활편의")
+        var subOption = subOptions.j
+        
+    else if(category2 == "면세점")
+        var subOption = subOptions.k
+        
+    else if(category2 == "도서")
+        var subOption = subOptions.l
+      
+    }
   
+
+  const onClick = () => {     //조회하기 버튼 클릭하면 서버에 정보 요청하기
+    let fieldData = form.getFieldsValue()
+      
+    queryTemplete.startDate = fieldData.dateFromYear + "-" + fieldData.dateFromMonth + "-" + fieldData.dateFromDay
+    queryTemplete.endDate = fieldData.dateToYear + "-" + fieldData.dateToMonth + "-" + fieldData.dateToDay
+    queryTemplete.timeUnit = fieldData.timeUnit
+    queryTemplete.category.name = 
+    queryTemplete.category.param = 
+    queryTemplete.device = fieldData.device
+    queryTemplete.gender = fieldData.gender
+    queryTemplete.ages.push(fieldData.ages)
+  }   
+
   return (
     <>
     <Form
@@ -94,18 +157,28 @@ const App = () => {
     <Typography.Text strong style={{marginLeft:10}}> 분야 </Typography.Text>
     <Form.Item name="category">
     <Select defaultValue="패션의류" style={{width: 200, marginTop: 30, marginRight: 30}}>
-      <Option value="패션의류">패션의류</Option>
-      <Option value="패션잡화">패션잡화</Option>
-      <Option value="화장품/미용">화장품/미용</Option>
-      <Option value="디지털/가전">디지털/가전</Option>
-      <Option value="가구/인테리어">가구/인테리어</Option>
-      <Option value="출산/육아">출산/육아</Option>
-      <Option value="식품">식품</Option>
-      <Option value="스포츠/레저">스포츠/레저</Option>
-      <Option value="생활/건강">생활/건강</Option>
-      <Option value="여가/생활편의">여가/생활편의</Option>
-      <Option value="면세점">면세점</Option>
-      <Option value="도서">도서</Option>
+      <Option value="패션의류" onChange={()=>categoryChange("패션의류")}>패션의류</Option>
+      <Option value="패션잡화" onChange={()=>categoryChange("패션잡화")}>패션잡화</Option>
+      <Option value="화장품/미용" onChange={()=>categoryChange("화장품/미용")}>화장품/미용</Option>
+      <Option value="디지털/가전" onChange={()=>categoryChange("디지털/가전")}>디지털/가전</Option>
+      <Option value="가구/인테리어" onChange={()=>categoryChange("가구/인테리어")}>가구/인테리어</Option>
+      <Option value="출산/육아" onChange={()=>categoryChange("출산/육아")}>출산/육아</Option>
+      <Option value="식품" onChange={()=>categoryChange("식품")}>식품</Option>
+      <Option value="스포츠/레저" onChange={()=>categoryChange("스포츠/레저")}>스포츠/레저</Option>
+      <Option value="생활/건강" onChange={()=>categoryChange("생활/건강")}>생활/건강</Option>
+      <Option value="여가/생활편의" onChange={()=>categoryChange("여가/생활편의")}>여가/생활편의</Option>
+      <Option value="면세점" onChange={()=>categoryChange("면세점")}>면세점</Option>
+      <Option value="도서" onChange={()=>categoryChange("도서")}>도서</Option>
+    </Select>
+    <RightOutlined />
+    </Form.Item>
+
+    <Form.Item name="category2">
+    <Select id="category2-1" defaultValue="2분류" style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}}>
+      <Option value="여성의류">여성의류</Option>
+      <Option value="여성언더웨어/잠옷">여성언더웨어/잠옷</Option>
+      <Option value="남성의류">남성의류</Option>
+      <Option value="남성언더웨어/잠옷">남성언더웨어/잠옷</Option>
     </Select>
     </Form.Item>
     </Row>
@@ -122,9 +195,9 @@ const App = () => {
 
     <Form.Item name="daterange">
     <Radio.Group defaultValue="1m" buttonStyle="solid" style={{ marginTop: 30, marginRight: 30}}>
-      <Radio.Button value="1m" onChange={()=>onChange("1m")}>1개월</Radio.Button>
-      <Radio.Button value="3m" onChange={()=>onChange("3m")}>3개월</Radio.Button>
-      <Radio.Button value="1y" onChange={()=>onChange("1y")}>1년</Radio.Button>
+      <Radio.Button value="1m" onChange={() => onChange("1m")}>1개월</Radio.Button>
+      <Radio.Button value="3m" onChange={() => onChange("3m")}>3개월</Radio.Button>
+      <Radio.Button value="1y" onChange={() => onChange("1y")}>1년</Radio.Button>
       <Radio.Button value="self" >직접입력</Radio.Button>
     </Radio.Group>
     </Form.Item>
