@@ -28,26 +28,30 @@ if (day <= 9){
 const options = ['패션의류', '패션잡화', '화장품/미용', '디지털/가전', '가구/인테리어', '출산/육아', '식품', '스포츠/레저', '생활/건강', '여가/생활편의', '면세점', '도서'];
 
 const subOptions = {
-  '패션의류':['여성의류', '여성언더웨어', '남성의류', '남성언더웨어'], '패션잡화':['여성신발','남성신발','신발용품','여성가방','남성가방','여행용가방','지갑','벨트','모자','장갑'],
-  '화장품/미용':['클렌징', '마스크','향수'], '디지털/가전':['PC', '모니터'], '가구/인테리어':['침실가구','거실가수','수납가구'], '출산/육아':['분유','기저귀','이유식'],
-  '식품':['반찬','과자','음료'], '스포츠/레저':['자전거', '헬스', '낚시'], '생활/건강':['자동차용품','수집품'], '여가/생활편의':['원데이클래스','국내여행'],
-  '면세점':['화장품','향수','시계', '주얼리'], '도서':['소설','시/에세이','경제/경영', '인문']
+  '패션의류':['여성의류', '여성언더웨어/잠옷', '남성의류', '남성언더웨어/잠옷'], '패션잡화':['여성신발','남성신발','여성가방','남성가방'],
+  '화장품/미용':['스킨케어','클렌징', '마스크','향수'], '디지털/가전':['PC', '카메라'], '가구/인테리어':['침실가구','거실가구','수납가구'], '출산/육아':['분유','기저귀','이유식'],
+  '식품':['반찬','과자/베이커리','음료'], '스포츠/레저':['자전거', '헬스', '낚시'], '생활/건강':['자동차용품','수집품'], '여가/생활편의':['원데이클래스','국내여행'],
+  '면세점':['화장품','시계/기프트', '주얼리'], '도서':['소설','시/에세이','경제/경영', '인문']
+}
+
+const subOptions2 = {
+  '여성의류':['니트/스웨터', '가디건', '원피스'], '여성언더웨어':['브라','팬티','잠옷'], '남성의류':['니트/스웨터','티셔츠','셔츠/남방'], '남성언더웨어/잠옷':['팬티','러닝','잠옷'],
+  '여성신발':['부츠','워커','단화','운동화'],'남성신발':['운동화','부츠','워커','슬리퍼'],'여성가방':['백팩','크로스백','숄더백'],'남성가방':['백팩','크로스백','숄더백'],
+  '스킨케어':['스킨/토너','로션','에센스','크림'], '클렌징':['클렌징폼','클렌징오일','클렌징크림'], '마스크':['마스크시트','필오프팩','수면팩'],'향수':['여성향수','남성향수','남녀공용향수'],
+  'PC':['브랜드PC','서버/워크스테이션'], '카메라':['DSLR카메라','필름카메라'], '침실가구':['침대','매트리스'],'거실가구':['소파','테이블'],'수납가구':['행거','수납장'],
+  '분유':['국내분유','수입분유'],'기저귀':['국내기저귀','수입기저귀'],'이유식':['가공이유식','수제이유식'], '반찬':['절임류','조림류','볶음류'],'과자/베이커리':['쿠키','초콜릿','사탕'],
+  '음료':['생수','탄산수','커피'], '자전거':['자전거의류','자전거부품'], '헬스':['러닝머신','웨이트기구'], '낚시':['낚싯대','낚시릴','낚싯줄'],
+  '자동차용품':['차량용케이블','스노우체인'],'수집품':['서예/글씨','LP','포스터'], '원데이클래스':['수공예클래스','쿠킹클래스','기타클래스'],'국내여행':['국내패키지/기타','국내숙박'],
+  '화장품':['스킨케어','메이크업','선케어'],'시계/기프트':['시계','필기도구','수첩/다이어리'], '주얼리':['귀걸이','목걸이','반지'], '소설':['고전/문학','장르소설'],
+  '시/에세이':['한국시','외국시'],'경제/경영':['경제','경영','재테크/투자'], '인문':['심리','철학','언어학/기호학','종교학/신화학']
 }
 
 const App = () => {
   const [form] = Form.useForm();
 
   const[menu, setMenu] = useState(subOptions[options[0]]);
-  const[secondMenu, setSecondMenu] = useState(subOptions[options[0]][0]);
-
-  const handleOptionChange = (value) => {
-    setMenu(subOptions[value]);
-    setSecondMenu(subOptions[value][0]);
-  }
-
-  const onSecondMenuChange = (value) => {
-    setSecondMenu(value);
-  }
+  const[secondMenu, setSecondMenu] = useState('2분류');
+  const[thirdMenu, setThirdMenu] = useState('3분류');
   
   const queryTemplete = {
     "startDate": "",
@@ -62,6 +66,18 @@ const App = () => {
     "ages": []
   
     }
+
+  const handleOptionChange = (value) => {   //처음 카테고리 선택에 따라 2분류를 해당 값으로 출력
+    setMenu(subOptions[value]);
+  }
+  
+  const onSecondMenuChange = (value) => {   //2분류 선택에 따라 3분류를 해당 값으로 출력
+    setSecondMenu(subOptions2[value]);
+  }
+
+  const onThirdMenuChange = (value) => {  //3분류 선택되면 해당 값으로 출력
+    setThirdMenu(value);
+  }
 
   const getDay = (changeDate) => {  //문자열 자르기를 통해 날짜 형식 맞추기
     let datetemp = moment().subtract(1,'days').format("YYYYMMDD");
@@ -80,11 +96,11 @@ const App = () => {
   const onChange = (timerange) => {   //라디오버튼 눌렀을 때 해당하는 날짜범위로 변경(1개월, 3개월, 1년)
     let dateset = moment().subtract(1, 'days').format("YYYYMMDD")
 
-    if(timerange == "1m") 
+    if(timerange === "1m") 
       dateset = moment(dateset).subtract(1, 'months').format("YYYYMMDD")  
-    else if(timerange == "3m")
+    else if(timerange === "3m")
       dateset= moment(dateset).subtract(3, 'months').format("YYYYMMDD")
-    else if(timerange == "1y")
+    else if(timerange === "1y")
       dateset = moment(dateset).subtract(1, 'years').format("YYYYMMDD") 
 
     let finalDate = getDay(dateset)
@@ -96,53 +112,6 @@ const App = () => {
     sbutton.daterange = "self"
     form.setFieldsValue(sbutton)
   }   
-
-  // const categoryChange = (category2) => {    //분야별 분야에 맞는 2분류로 변경
-  //   let categoryset = form.getFieldsValue()
-  //   if(category2 == "패션의류"){
-  //       var subOption = subOptions.a
-  //       categoryset.category2 = subOption
-  //       form.setFieldsValue(categoryset)
-  //   }
-  //   else if(category2 == "패션잡화"){
-  //       subOption = subOptions.b
-  //       categoryset.category2 = subOption
-  //       form.setFieldsValue(categoryset)
-  //       console.log(categoryset)
-  //   }
-  //   else if(category2 == "화장품/미용"){
-  //       subOption = subOptions.c
-  //       categoryset.category2 = subOption
-  //       form.setFieldsValue(categoryset)
-  //   }
-  //   else if(category2 == "디지털/가전")
-  //       subOption = subOptions.d
-        
-  //   else if(category2 == "가구/인테리어")
-  //       subOption = subOptions.e
-        
-  //   else if(category2 == "출산/육아")
-  //       subOption = subOptions.f
-        
-  //   else if(category2 == "식품")
-  //       subOption = subOptions.g
-        
-  //   else if(category2 == "스포츠/레저")
-  //       subOption = subOptions.h
-        
-  //   else if(category2 == "생활/건강")
-  //       subOption = subOptions.i
-        
-  //   else if(category2 == "여가/생활편의")
-  //       subOption = subOptions.j
-        
-  //   else if(category2 == "면세점")
-  //       subOption = subOptions.k
-        
-  //   else if(category2 == "도서")
-  //       subOption = subOptions.l
-      
-  //   }
   
 
   const onClick = () => {     //조회하기 버튼 클릭하면 서버에 정보 요청하기
@@ -170,19 +139,35 @@ const App = () => {
     <Typography.Text strong style={{marginLeft:10}}> 분야 </Typography.Text>
     <Form.Item name="category">
     <Select defaultValue={options[0]} style={{width: 200, marginTop: 30, marginRight: 30}} onChange={handleOptionChange}>
-      {options.map((option) => (
-      <Option key={option}>{option}</Option>))}
+      {options.map((menu1) => (
+      <Option key={menu1}>{menu1}</Option>
+      ))}
     </Select>
     <RightOutlined />
     </Form.Item>
 
     <Form.Item name="category2">
     <Select defaultValue={secondMenu} style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}} onChange={onSecondMenuChange}>
-        {menu.map((tab) => (
-          <Option key={tab}>{tab}</Option>
+        {menu.map((menu2) => (
+          <Option key={menu2}>{menu2}</Option>
         ))}
     </Select>
     </Form.Item>
+
+        
+    {
+      //secondMenu가 선택되지 않으면(2분류이면) 빈값, 선택되면(값이 변경됨) 3분류 출력
+    secondMenu === '2분류' ? <></> :
+      <Form.Item name="category3">
+      <RightOutlined />
+      <Select defaultValue={thirdMenu} style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}} onChange={onThirdMenuChange}>
+          {secondMenu.map((menu3) => (
+            <Option key={menu3}>{menu3}</Option>
+          ))}
+      </Select>
+      </Form.Item>
+    }
+
     </Row>
     
     <Row>
