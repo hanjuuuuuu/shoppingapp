@@ -2,7 +2,8 @@ import './App.css';
 import { SearchOutlined } from '@ant-design/icons';
 import { Form, Select, Row, Button, Typography, Checkbox, Radio } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import 'antd/dist/antd.min.css';
 
 const { Option } = Select;
@@ -12,7 +13,7 @@ let date = new Date();    //날짜 초기값 설정
 let year = String(date.getFullYear());
 let tmonth = date.getMonth();
 tmonth += 1;
-if(tmonth <= 9){   //두자리 수로 반환한다.
+if(tmonth <= 9){   //두자리 수로 반환
   tmonth = "0" + tmonth;
 }
 let fmonth = tmonth - 1
@@ -35,7 +36,7 @@ const subOptions = {
 }
 
 const subOptions2 = {
-  '여성의류':['니트/스웨터', '가디건', '원피스'], '여성언더웨어':['브라','팬티','잠옷'], '남성의류':['니트/스웨터','티셔츠','셔츠/남방'], '남성언더웨어/잠옷':['팬티','러닝','잠옷'],
+  '여성의류':['니트/스웨터', '가디건', '원피스'], '여성언더웨어/잠옷':['브라','팬티','잠옷/홈웨어',], '남성의류':['니트/스웨터','티셔츠','셔츠/남방'], '남성언더웨어/잠옷':['팬티','러닝','잠옷/홈웨어'],
   '여성신발':['부츠','워커','단화','운동화'],'남성신발':['운동화','부츠','워커','슬리퍼'],'여성가방':['백팩','크로스백','숄더백'],'남성가방':['백팩','크로스백','숄더백'],
   '스킨케어':['스킨/토너','로션','에센스','크림'], '클렌징':['클렌징폼','클렌징오일','클렌징크림'], '마스크':['마스크시트','필오프팩','수면팩'],'향수':['여성향수','남성향수','남녀공용향수'],
   'PC':['브랜드PC','서버/워크스테이션'], '카메라':['DSLR카메라','필름카메라'], '침실가구':['침대','매트리스'],'거실가구':['소파','테이블'],'수납가구':['행거','수납장'],
@@ -50,8 +51,8 @@ const App = () => {
   const [form] = Form.useForm();
 
   const[menu, setMenu] = useState(subOptions[options[0]]);
-  const[secondMenu, setSecondMenu] = useState('2분류');
-  const[thirdMenu, setThirdMenu] = useState('3분류');
+  const[secondMenu, setSecondMenu] = useState("2분류");
+  const[thirdMenu, setThirdMenu] = useState("3분류");
   
   const queryTemplete = {
     "startDate": "",
@@ -67,17 +68,31 @@ const App = () => {
   
     }
 
-  const handleOptionChange = (value) => {   //처음 카테고리 선택에 따라 2분류를 해당 값으로 출력
+  const handleOptionChange = (value) => {   //처음 카테고리 선택에 따라 2분류를 해당 값으로 출력 && 3분류 사라지게 하기
     setMenu(subOptions[value]);
+    setSecondMenu("2분류");
+    
+    let categorydata = form.getFieldsValue()
+    categorydata.category2 = "2분류"
+    form.setFieldsValue(categorydata)
   }
   
   const onSecondMenuChange = (value) => {   //2분류 선택에 따라 3분류를 해당 값으로 출력
     setSecondMenu(subOptions2[value]);
+    setThirdMenu("3분류");
   }
 
   const onThirdMenuChange = (value) => {  //3분류 선택되면 해당 값으로 출력
     setThirdMenu(value);
   }
+
+  // useEffect(() =>{
+  //   console.log('______________')
+  //   console.log(menu)
+  //   console.log(secondMenu)
+  //   console.log(thirdMenu)
+
+  // },[secondMenu]);
 
   const getDay = (changeDate) => {  //문자열 자르기를 통해 날짜 형식 맞추기
     let datetemp = moment().subtract(1,'days').format("YYYYMMDD");
@@ -157,16 +172,17 @@ const App = () => {
         
     {
       //secondMenu가 선택되지 않으면(2분류이면) 빈값, 선택되면(값이 변경됨) 3분류 출력
-    secondMenu === '2분류' ? <></> :
-      <Form.Item name="category3">
-      <RightOutlined />
-      <Select defaultValue={thirdMenu} style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}} onChange={onThirdMenuChange}>
-          {secondMenu.map((menu3) => (
-            <Option key={menu3}>{menu3}</Option>
-          ))}
-      </Select>
-      </Form.Item>
+      secondMenu === '2분류' ? <></> :
+        <Form.Item name="category3">
+        <RightOutlined />
+        <Select value={thirdMenu} style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}} onChange={onThirdMenuChange}>
+            {secondMenu.map((menu3) => (
+              <Option key={menu3}>{menu3}</Option>
+            ))}
+        </Select>
+        </Form.Item>     
     }
+
 
     </Row>
     
