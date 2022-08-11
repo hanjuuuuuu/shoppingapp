@@ -26,25 +26,22 @@ if (day <= 9){
   day = "0" + day;
 }
 
-const options = ['패션의류', '패션잡화', '화장품/미용', '디지털/가전', '가구/인테리어', '출산/육아', '식품', '스포츠/레저', '생활/건강', '여가/생활편의', '면세점', '도서'];
+const options = ['패션의류', '패션잡화', '화장품/미용', '디지털/가전', '가구/인테리어', '출산/육아', '식품', '면세점', '도서'];
 
 const subOptions = {
-  '패션의류':['여성의류', '여성언더웨어/잠옷', '남성의류', '남성언더웨어/잠옷'], '패션잡화':['여성신발','남성신발','여성가방','남성가방'],
+  '패션의류':['여성의류', '남성의류'], '패션잡화':['여성신발','남성신발','여성가방','남성가방'],
   '화장품/미용':['스킨케어','클렌징', '마스크','향수'], '디지털/가전':['PC', '카메라'], '가구/인테리어':['침실가구','거실가구','수납가구'], '출산/육아':['분유','기저귀','이유식'],
-  '식품':['반찬','과자/베이커리','음료'], '스포츠/레저':['자전거', '헬스', '낚시'], '생활/건강':['자동차용품','수집품'], '여가/생활편의':['원데이클래스','국내여행'],
-  '면세점':['화장품','시계/기프트', '주얼리'], '도서':['소설','시/에세이','경제/경영', '인문']
+  '식품':['반찬','과자/베이커리','음료'], '면세점':['시계/기프트', '주얼리'], '도서':['소설','시/에세이','경제/경영', '인문']
 }
 
 const subOptions2 = {
-  '여성의류':['니트/스웨터', '가디건', '원피스'], '여성언더웨어/잠옷':['브라','팬티','잠옷/홈웨어',], '남성의류':['니트/스웨터','티셔츠','셔츠/남방'], '남성언더웨어/잠옷':['팬티','러닝','잠옷/홈웨어'],
-  '여성신발':['부츠','워커','단화','운동화'],'남성신발':['운동화','부츠','워커','슬리퍼'],'여성가방':['백팩','크로스백','숄더백'],'남성가방':['백팩','크로스백','숄더백'],
-  '스킨케어':['스킨/토너','로션','에센스','크림'], '클렌징':['클렌징폼','클렌징오일','클렌징크림'], '마스크':['마스크시트','필오프팩','수면팩'],'향수':['여성향수','남성향수','남녀공용향수'],
+  '여성의류':['니트/스웨터', '가디건', '원피스'], '남성의류':['니트/스웨터','티셔츠','셔츠/남방'],
+  '여성신발':['부츠','워커'],'남성신발':['운동화','슬리퍼'],'여성가방':['백팩','숄더백'],'남성가방':['백팩','크로스백'],
+  '스킨케어':['스킨/토너','로션'], '클렌징':['클렌징폼','클렌징오일'], '마스크':['마스크시트','필오프팩'],'향수':['여성향수','남성향수','남녀공용향수'],
   'PC':['브랜드PC','서버/워크스테이션'], '카메라':['DSLR카메라','필름카메라'], '침실가구':['침대','매트리스'],'거실가구':['소파','테이블'],'수납가구':['행거','수납장'],
   '분유':['국내분유','수입분유'],'기저귀':['국내기저귀','수입기저귀'],'이유식':['가공이유식','수제이유식'], '반찬':['절임류','조림류','볶음류'],'과자/베이커리':['쿠키','초콜릿','사탕'],
-  '음료':['생수','탄산수','커피'], '자전거':['자전거의류','자전거부품'], '헬스':['러닝머신','웨이트기구'], '낚시':['낚싯대','낚시릴','낚싯줄'],
-  '자동차용품':['차량용케이블','스노우체인'],'수집품':['서예/글씨','LP','포스터'], '원데이클래스':['수공예클래스','쿠킹클래스','기타클래스'],'국내여행':['국내패키지/기타','국내숙박'],
-  '화장품':['스킨케어','메이크업','선케어'],'시계/기프트':['시계','필기도구','수첩/다이어리'], '주얼리':['귀걸이','목걸이','반지'], '소설':['고전/문학','장르소설'],
-  '시/에세이':['한국시','외국시'],'경제/경영':['경제','경영','재테크/투자'], '인문':['심리','철학','언어학/기호학','종교학/신화학']
+  '음료':['생수','탄산수','커피'], '시계/기프트':['시계','필기도구'], '주얼리':['귀걸이','목걸이','반지'], 
+  '소설':['고전/문학','장르소설'], '시/에세이':['한국시','외국시'],'경제/경영':['경제','경영'], '인문':['심리','철학']
 }
 
 const App = () => {
@@ -59,8 +56,8 @@ const App = () => {
     "endDate": "",
     "timeUnit": "",
     "category": [
-      {"name":"", "param": [""]},
-      {"name":"", "param": [""]}
+      {"name":"", "param": []},
+      {"name":"", "param": []}
     ],
     "device": "",
     "gender": "",
@@ -75,15 +72,226 @@ const App = () => {
     let categorydata = form.getFieldsValue()
     categorydata.category2 = "2분류"
     form.setFieldsValue(categorydata)
+
+    console.log(value)
+
+    return value
   }
   
   const onSecondMenuChange = (value) => {   //2분류 선택에 따라 3분류를 해당 값으로 출력
     setSecondMenu(subOptions2[value]);
     setThirdMenu("3분류");
+
+    return value
   }
 
   const onThirdMenuChange = (value) => {  //3분류 선택되면 해당 값으로 출력
     setThirdMenu(value);
+
+    return value
+  }
+
+  const checkParam = (value) => {   //param지정
+    if (value === '패션의류')
+      var paramdata = "50000000"
+    else if (value === '패션잡화')
+       paramdata = "50000001"
+    else if (value === '화장품/미용')
+       paramdata = "50000002"
+    else if (value === '디지털/가전')
+       paramdata = "50000003"
+    else if (value === '가구/인테리어')
+       paramdata = "50000004"
+    else if (value === '출산/육아')
+       paramdata = "50000005"
+    else if (value === '식품')
+       paramdata = "50000006"
+    else if (value === '스포츠/레저')
+       paramdata = "50000007"
+    else if (value === '면세점')
+       paramdata = "500000010"
+    else if (value === '도서')
+       paramdata = "500005542"
+
+    else if (value === '여성의류')
+       paramdata = "50000167"
+    else if (value === '남성의류')
+       paramdata = "50000169"
+    else if (value === '여성신발')
+       paramdata = "50000173"
+    else if (value === '남성신발')
+       paramdata = "50000174"
+    else if (value === '여성가방')
+       paramdata = "50000176"
+    else if (value === '남성가방')
+       paramdata = "50000177"
+    else if (value === '스킨케어')
+       paramdata = "50000190"
+    else if (value === '클렌징')
+       paramdata = "50000192"
+    else if (value === '마스크') 
+       paramdata = "50000193"
+    else if (value === '향수')
+       paramdata = "50000200"
+    else if (value === 'PC')
+       paramdata = "50000089"
+    else if (value === '카메라')
+       paramdata = "50000206"
+    else if (value === '침실가구')
+       paramdata = "50000100"
+    else if (value === '거실가구')
+       paramdata = "50000101"
+    else if (value === '수납가구')
+       paramdata = "50000103"
+    else if (value === '분유')
+       paramdata = "50000115"
+    else if (value === '기저귀')
+       paramdata = "50000116"
+    else if (value === '이유식')
+       paramdata = "50000118"
+    else if (value === '반찬')
+       paramdata = "50000146"
+    else if (value === '과자/베이커리')
+       paramdata = "50000149"
+    else if (value === '음료')
+       paramdata = "50000148"
+    else if (value === '시계/기프트')
+       paramdata = "50000015"
+    else if (value === '주얼리')
+       paramdata = "50000016"
+    else if (value === '소설')
+       paramdata = "50005543"
+    else if (value === '시/에세이')
+       paramdata = "50005544"
+    else if (value === '경제/경영')
+       paramdata = "50005549"
+    else if (value === '인문')
+       paramdata = "50005545"
+
+    else if (value === '니트/스웨터')
+       paramdata = "50000805"
+    else if (value === '가디건')
+       paramdata = "50000806"
+    else if (value === '원피스')
+       paramdata = "50000807"
+    else if (value === '니트/스웨터')
+       paramdata = "50000831"
+    else if (value === '티셔츠')
+       paramdata = "50000830"
+    else if (value === '셔츠/남방')
+       paramdata = "50000833"
+    else if (value === '부츠')
+       paramdata = "50001462"
+    else if (value === '워커')
+       paramdata = "50001461"
+    else if (value === '운동화')
+       paramdata = "50001466"
+    else if (value === '슬리퍼')
+       paramdata = "50000790"
+    else if (value === '백팩')
+       paramdata = "50000644"
+    else if (value === '숄더백')
+       paramdata = "50000639"
+    else if (value === '백팩')
+       paramdata = "50000651"
+    else if (value === '크로스백')
+       paramdata = "50000648"
+    else if (value === '스킨/토너')
+       paramdata = "50000437"
+    else if (value === '로션')
+       paramdata = "50000438"
+    else if (value === '클렌징폼')
+       paramdata = "50000451"
+    else if (value === '클렌징오일')
+       paramdata = "50000452"
+    else if (value === '마스크시트')
+       paramdata = "50000463"
+    else if (value === '필오프백')
+       paramdata = "50000464"
+    else if (value === '여성향수')
+       paramdata = "50000312"
+    else if (value === '남성향수')
+       paramdata = "50000313"
+    else if (value === '남녀공용향수')
+       paramdata = "50000314"
+    else if (value === 'DSLR카메라')
+       paramdata = "50005545"
+    else if (value === '필름카메라')
+       paramdata = "50005545"
+    else if (value === '브랜드PC')
+       paramdata = "50001737"
+    else if (value === '서버/워크스테이션')
+       paramdata = "50001739"
+    else if (value === '침대')
+       paramdata = "50001228"
+    else if (value === '매트리스')
+       paramdata = "50001229"
+    else if (value === '소파')
+       paramdata = "50001234"
+    else if (value === '테이블')
+       paramdata = "50001235"
+    else if (value === '행거')
+       paramdata = "50001319"
+    else if (value === '수납장')
+       paramdata = "50001320"
+    else if (value === '국내분유')
+       paramdata = "50000854"
+    else if (value === '수입분유')
+       paramdata = "50000855"
+    else if (value === '국내기저귀')
+       paramdata = "50000729"
+    else if (value === '수입기저귀')
+       paramdata = "50000730"
+    else if (value === '가공이유식')
+       paramdata = "50009344"
+    else if (value === '수제이유식')
+       paramdata = "50009720"
+    else if (value === '절임류')
+       paramdata = "50002015"
+    else if (value === '조림류')
+       paramdata = "50002016"
+    else if (value === '볶음류')
+       paramdata = "50014360"
+    else if (value === '쿠키')
+       paramdata = "50001999"
+    else if (value === '초콜릿')
+       paramdata = "50002000"
+    else if (value === '사탕')
+       paramdata = "50002001"
+    else if (value === '생수')
+       paramdata = "50002032"
+    else if (value === '탄산수')
+       paramdata = "50002033"
+    else if (value === '커피')
+       paramdata = "50001081"
+    else if (value === '시계')
+       paramdata = "50000795"
+    else if (value === '필기도구')
+       paramdata = "50001667"
+    else if (value === '귀걸이')
+       paramdata = "50001673"
+    else if (value === '목걸이')
+       paramdata = "50001674"
+    else if (value === '반지')
+       paramdata = "50001675"
+    else if (value === '고전/문학')
+       paramdata = "50005569"
+    else if (value === '장르소설')
+       paramdata = "50005570"
+    else if (value === '한국시')
+       paramdata = "50011720"
+    else if (value === '외국시')
+       paramdata = "50011740"
+    else if (value === '경제')
+       paramdata = "50005617"
+    else if (value === '경영')
+       paramdata = "50005618"
+    else if (value === '심리')
+       paramdata = "50005583"
+    else if (value === '철학')
+       paramdata = "50005585"
+
+    return paramdata
   }
 
   // useEffect(() =>{
@@ -128,18 +336,55 @@ const App = () => {
     form.setFieldsValue(sbutton)
   }   
   
+  const genderChange = (arrayGender) => {    //여성과 남성 둘 다 선택할 경우, 성별 전체로 변경
+    if(arrayGender.includes(''))
+      return ""
+    else if(arrayGender.includes('m') && arrayGender.includes('f'))
+      return ""
+    else 
+      return arrayGender.join()
+  }
 
-  const onClick = () => {     //조회하기 버튼 클릭하면 서버에 정보 요청하기
+  const deviceChange = (arrayDevice) => {   //PC와 모바일 둘 다 선택할 경우, 기기 전체로 변경
+    if(arrayDevice.includes(''))
+      return ""
+    else if(arrayDevice.includes('pc') && arrayDevice.includes('mo'))
+      return ""
+    else 
+      return arrayDevice.join()
+  }
+
+  const onClick = () => {     //조회하기 버튼 클릭하면 서버 정보 생성하기
     let fieldData = form.getFieldsValue()
       
     queryTemplete.startDate = fieldData.dateFromYear + "-" + fieldData.dateFromMonth + "-" + fieldData.dateFromDay
     queryTemplete.endDate = fieldData.dateToYear + "-" + fieldData.dateToMonth + "-" + fieldData.dateToDay
     queryTemplete.timeUnit = fieldData.timeUnit
-    queryTemplete.category.name = 
-    queryTemplete.category.param = 
-    queryTemplete.device = fieldData.device
-    queryTemplete.gender = fieldData.gender
+    queryTemplete.category[0].name = fieldData.category
+    queryTemplete.category[1].name = fieldData.category2
+    //queryTemplete.category[2].name = fieldData.category3
+    queryTemplete.category[0].param.length = 0;
+    queryTemplete.category[1].param.length = 0;
+    //queryTemplete.category[2].param.length = 0;
+    queryTemplete.category[0].param.push(checkParam(fieldData.category))
+    queryTemplete.category[1].param.push(checkParam(fieldData.category2))
+    // queryTemplete.category[1].param.push()
+    // queryTemplete.category[2].param.push()
+    queryTemplete.device = deviceChange(fieldData.device)
+    queryTemplete.gender = genderChange(fieldData.gender)
+    queryTemplete.ages.length = 0;
     queryTemplete.ages.push(fieldData.ages)
+    
+    
+
+    console.log(queryTemplete)
+
+    // axios.post(
+
+    // )
+    // .then((response) => {
+
+    // })
   }   
 
   return (
@@ -333,7 +578,7 @@ const App = () => {
     <Row>
       <Typography.Text strong style={{marginLeft:10}}>기기별</Typography.Text>
         <Form.Item name="device"> 
-          <Checkbox.Group style={{width: '100%', marginLeft: 10}}>
+          <Checkbox.Group style={{width: '100%', marginLeft: 10}} >
             <Checkbox value="">전체</Checkbox>
             <Checkbox value="pc">PC</Checkbox>
             <Checkbox value="mo">모바일</Checkbox>
@@ -343,9 +588,9 @@ const App = () => {
       <Typography.Text strong>성별</Typography.Text>
         <Form.Item name="gender"> 
           <Checkbox.Group style={{width: '100%', marginLeft: 10}}>
-            <Checkbox value="">전체</Checkbox>
-            <Checkbox value="f">여성</Checkbox>
-            <Checkbox value="m">남성</Checkbox>
+            <Checkbox value="" >전체</Checkbox>
+            <Checkbox value="f" >여성</Checkbox>
+            <Checkbox value="m" >남성</Checkbox>
           </Checkbox.Group> 
         </Form.Item>
         <Typography.Text style={{marginLeft:15, marginRight: 15}}>|</Typography.Text>
