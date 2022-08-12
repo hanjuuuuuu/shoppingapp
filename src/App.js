@@ -9,18 +9,18 @@ import 'antd/dist/antd.min.css';
 const { Option } = Select;
 const moment = require('moment')
 
-let date = new Date();    //날짜 초기값 설정
-let year = String(date.getFullYear());
-let tmonth = date.getMonth();
+var date = new Date();    //날짜 초기값 설정
+var year = String(date.getFullYear());
+var tmonth = date.getMonth();
 tmonth += 1;
 if(tmonth <= 9){   //두자리 수로 반환
   tmonth = "0" + tmonth;
 }
-let fmonth = tmonth - 1
+var fmonth = tmonth - 1
 if(fmonth <= 9){   
   fmonth = "0" + fmonth;
 }
-let day = date.getDate();
+var day = date.getDate();
 day -= 1;
 if (day <= 9){
   day = "0" + day;
@@ -57,7 +57,8 @@ const App = () => {
     "timeUnit": "",
     "category": [
       {"name":"", "param": []},
-      {"name":"", "param": []}
+      {"name":"", "param": []},
+      {"name":"", "param": []},
     ],
     "device": "",
     "gender": "",
@@ -66,29 +67,25 @@ const App = () => {
     }
 
   const handleOptionChange = (value) => {   //처음 카테고리 선택에 따라 2분류를 해당 값으로 출력 && 3분류 사라지게 하기
+
     setMenu(subOptions[value]);
     setSecondMenu("2분류");
+    setThirdMenu("3분류");
     
     let categorydata = form.getFieldsValue()
     categorydata.category2 = "2분류"
     form.setFieldsValue(categorydata)
-
-    console.log(value)
-
-    return value
   }
   
   const onSecondMenuChange = (value) => {   //2분류 선택에 따라 3분류를 해당 값으로 출력
     setSecondMenu(subOptions2[value]);
     setThirdMenu("3분류");
 
-    return value
   }
 
   const onThirdMenuChange = (value) => {  //3분류 선택되면 해당 값으로 출력
     setThirdMenu(value);
 
-    return value
   }
 
   const checkParam = (value) => {   //param지정
@@ -336,8 +333,10 @@ const App = () => {
     form.setFieldsValue(sbutton)
   }   
   
-  const genderChange = (arrayGender) => {    //여성과 남성 둘 다 선택할 경우, 성별 전체로 변경
-    if(arrayGender.includes(''))
+  const genderChange = (arrayGender) => {    //여성과 남성 둘 다 선택할 경우와 아무 선택도 하지 않을 경우, 성별 전체로 변경
+    if(arrayGender == null)
+      return ""
+    else if(arrayGender.includes(''))
       return ""
     else if(arrayGender.includes('m') && arrayGender.includes('f'))
       return ""
@@ -345,8 +344,10 @@ const App = () => {
       return arrayGender.join()
   }
 
-  const deviceChange = (arrayDevice) => {   //PC와 모바일 둘 다 선택할 경우, 기기 전체로 변경
-    if(arrayDevice.includes(''))
+  const deviceChange = (arrayDevice) => {   //PC와 모바일 둘 다 선택할 경우와 아무 선택도 하지 않을 경우, 기기 전체로 변경
+    if(arrayDevice == null)
+      return ""
+    else if(arrayDevice.includes(''))
       return ""
     else if(arrayDevice.includes('pc') && arrayDevice.includes('mo'))
       return ""
@@ -354,26 +355,40 @@ const App = () => {
       return arrayDevice.join()
   }
 
+  const agesChange = (arrayAges) => {   //연령을 모두 선택할 경우와 아무 선택도 하지 않을 경우, 연령 전체로 변경
+    if(arrayAges == null)
+      return ""
+    else if(arrayAges.includes(''))
+      return ""
+    else if(arrayAges.includes('10') && (arrayAges.includes('20')) && (arrayAges.includes('30')) && (arrayAges.includes('40')) && (arrayAges.includes('50')) && (arrayAges.includes('60')))
+      return ""
+  }
+
   const onClick = () => {     //조회하기 버튼 클릭하면 서버 정보 생성하기
     let fieldData = form.getFieldsValue()
+
+    let fieldYear =  fieldData.dateFromYear || year
+    let fieldfMonth = fieldData.dateFromMonth || fmonth
+    let fieldtMonth = fieldData.dateToMonth || tmonth
+    let fieldDay = fieldData.dateFromDay || day
       
-    queryTemplete.startDate = fieldData.dateFromYear + "-" + fieldData.dateFromMonth + "-" + fieldData.dateFromDay
-    queryTemplete.endDate = fieldData.dateToYear + "-" + fieldData.dateToMonth + "-" + fieldData.dateToDay
-    queryTemplete.timeUnit = fieldData.timeUnit
-    queryTemplete.category[0].name = fieldData.category
+    queryTemplete.startDate = fieldYear + "-" + fieldfMonth + "-" + fieldDay
+    queryTemplete.endDate = fieldYear + "-" + fieldtMonth + "-" + fieldDay
+    queryTemplete.timeUnit = fieldData.timeUnit || "date"
+    queryTemplete.category[0].name = fieldData.category || options[0]
     queryTemplete.category[1].name = fieldData.category2
-    //queryTemplete.category[2].name = fieldData.category3
+    queryTemplete.category[2].name = thirdMenu
+
     queryTemplete.category[0].param.length = 0;
     queryTemplete.category[1].param.length = 0;
-    //queryTemplete.category[2].param.length = 0;
-    queryTemplete.category[0].param.push(checkParam(fieldData.category))
+    queryTemplete.category[2].param.length = 0;
+    queryTemplete.category[0].param.push(checkParam(queryTemplete.category[0].name))
     queryTemplete.category[1].param.push(checkParam(fieldData.category2))
-    // queryTemplete.category[1].param.push()
-    // queryTemplete.category[2].param.push()
+    queryTemplete.category[2].param.push(checkParam(thirdMenu))
     queryTemplete.device = deviceChange(fieldData.device)
     queryTemplete.gender = genderChange(fieldData.gender)
     queryTemplete.ages.length = 0;
-    queryTemplete.ages.push(fieldData.ages)
+    queryTemplete.ages.push(agesChange(fieldData.ages))
     
     
 
@@ -400,12 +415,13 @@ const App = () => {
     <Form.Item name="category">
     <Select defaultValue={options[0]} style={{width: 200, marginTop: 30, marginRight: 30}} onChange={handleOptionChange}>
       {options.map((menu1) => (
-      <Option key={menu1}>{menu1}</Option>
+        <Option key={menu1}>{menu1}</Option>
       ))}
     </Select>
-    <RightOutlined />
     </Form.Item>
 
+    <RightOutlined style={{marginTop: 40, marginLeft:5, marginRight: 5}}/>
+    
     <Form.Item name="category2">
     <Select defaultValue={secondMenu} style={{width: 200, marginTop: 30, marginRight: 30, marginLeft: 30}} onChange={onSecondMenuChange}>
         {menu.map((menu2) => (
@@ -442,7 +458,7 @@ const App = () => {
     </Form.Item> 
 
     <Form.Item name="daterange">
-    <Radio.Group defaultValue="1m" buttonStyle="solid" style={{ marginTop: 30, marginRight: 30}}>
+    <Radio.Group key="1m" defaultValue="1m" buttonStyle="solid" style={{ marginTop: 30, marginRight: 30}}>
       <Radio.Button value="1m" onChange={() => onChange("1m")}>1개월</Radio.Button>
       <Radio.Button value="3m" onChange={() => onChange("3m")}>3개월</Radio.Button>
       <Radio.Button value="1y" onChange={() => onChange("1y")}>1년</Radio.Button>
@@ -578,7 +594,7 @@ const App = () => {
     <Row>
       <Typography.Text strong style={{marginLeft:10}}>기기별</Typography.Text>
         <Form.Item name="device"> 
-          <Checkbox.Group style={{width: '100%', marginLeft: 10}} >
+          <Checkbox.Group defaultValue={""} style={{width: '100%', marginLeft: 10}} >
             <Checkbox value="">전체</Checkbox>
             <Checkbox value="pc">PC</Checkbox>
             <Checkbox value="mo">모바일</Checkbox>
@@ -587,7 +603,7 @@ const App = () => {
         <Typography.Text style={{marginLeft:15, marginRight: 15}}>|</Typography.Text>
       <Typography.Text strong>성별</Typography.Text>
         <Form.Item name="gender"> 
-          <Checkbox.Group style={{width: '100%', marginLeft: 10}}>
+          <Checkbox.Group defaultValue={""} style={{width: '100%', marginLeft: 10}}>
             <Checkbox value="" >전체</Checkbox>
             <Checkbox value="f" >여성</Checkbox>
             <Checkbox value="m" >남성</Checkbox>
@@ -596,7 +612,7 @@ const App = () => {
         <Typography.Text style={{marginLeft:15, marginRight: 15}}>|</Typography.Text>
       <Typography.Text strong>연령</Typography.Text>
         <Form.Item name="ages"> 
-          <Checkbox.Group style={{width: '100%', marginLeft: 10}}>
+          <Checkbox.Group defaultValue={""} style={{width: '100%', marginLeft: 10}}>
             <Checkbox value="">전체</Checkbox>
             <Checkbox value="10">10대</Checkbox>
             <Checkbox value="20">20대</Checkbox>
