@@ -362,44 +362,52 @@ const App = () => {
       return ""
     else if(arrayAges.includes('10') && (arrayAges.includes('20')) && (arrayAges.includes('30')) && (arrayAges.includes('40')) && (arrayAges.includes('50')) && (arrayAges.includes('60')))
       return ""
-  }
+     else{
+      return arrayAges
+     }
+   }
 
   const onClick = () => {     //조회하기 버튼 클릭하면 서버 정보 생성하기
     let fieldData = form.getFieldsValue()
+
+    const queryData = {...queryTemplete}
 
     let fieldYear =  fieldData.dateFromYear || year
     let fieldfMonth = fieldData.dateFromMonth || fmonth
     let fieldtMonth = fieldData.dateToMonth || tmonth
     let fieldDay = fieldData.dateFromDay || day
       
-    queryTemplete.startDate = fieldYear + "-" + fieldfMonth + "-" + fieldDay
-    queryTemplete.endDate = fieldYear + "-" + fieldtMonth + "-" + fieldDay
-    queryTemplete.timeUnit = fieldData.timeUnit || "date"
-    queryTemplete.category[0].name = fieldData.category || options[0]
-    queryTemplete.category[1].name = fieldData.category2
-    queryTemplete.category[2].name = thirdMenu
+    queryData.startDate = fieldYear + "-" + fieldfMonth + "-" + fieldDay
+    queryData.endDate = fieldYear + "-" + fieldtMonth + "-" + fieldDay
+    queryData.timeUnit = fieldData.timeUnit || "date"
+    queryData.category[0].name = fieldData.category || options[0]
+    queryData.category[1].name = fieldData.category2
+    queryData.category[2].name = thirdMenu
 
-    queryTemplete.category[0].param.length = 0;
-    queryTemplete.category[1].param.length = 0;
-    queryTemplete.category[2].param.length = 0;
-    queryTemplete.category[0].param.push(checkParam(queryTemplete.category[0].name))
-    queryTemplete.category[1].param.push(checkParam(fieldData.category2))
-    queryTemplete.category[2].param.push(checkParam(thirdMenu))
-    queryTemplete.device = deviceChange(fieldData.device)
-    queryTemplete.gender = genderChange(fieldData.gender)
-    queryTemplete.ages.length = 0;
-    queryTemplete.ages.push(agesChange(fieldData.ages))
+    queryData.category[0].param.length = 0;
+    queryData.category[1].param.length = 0;
+    queryData.category[2].param.length = 0;
+    queryData.category[0].param.push(checkParam(queryTemplete.category[0].name))
+    queryData.category[1].param.push(checkParam(fieldData.category2))
+    queryData.category[2].param.push(checkParam(thirdMenu))
+    queryData.device = deviceChange(fieldData.device)
+    queryData.gender = genderChange(fieldData.gender)
+    queryData.ages.length = 0;
+    for(var i=0; i<agesChange(fieldData.ages).length; i++)
+      queryData.ages.push(agesChange(fieldData.ages)[i])
     
-    
+    console.log(queryData)
 
-    console.log(queryTemplete)
-
-    // axios.post(
-
-    // )
-    // .then((response) => {
-
-    // })
+    axios.post('http://localhost:8000/shopping',   //queryData를 http://localhost:8000/shopping에 보낸다.
+      queryData
+    )
+    .then((response) => {
+      console.log("--------------response")
+      console.log(response)
+      console.log("----------------------")
+    })
+    .catch((error) => {console.log(error)
+    });
   }   
 
   return (
