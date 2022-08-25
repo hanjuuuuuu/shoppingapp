@@ -60,7 +60,12 @@ const config = {data: [
       tickCount: 5,
    },
    yAxis: {
-      max: 3000
+      tickCount: 3,
+      max: 100
+   },
+   tooltip: {
+      title: 'period',
+      name:''
    },
    color: '#2ca02c'
 };
@@ -78,9 +83,7 @@ const App = () => {
       "endDate": "",
       "timeUnit": "",
       "category": [
-         {"name":"", "param": []},
-         {"name":"", "param": []},
-         {"name":"", "param": []},
+         {"name":"", "param": []}
       ],
       "device": "",
       "gender": "",
@@ -393,16 +396,23 @@ const App = () => {
       queryData.startDate = fieldfYear + "-" + fieldfMonth + "-" + fieldDay
       queryData.endDate = fieldtYear + "-" + fieldtMonth + "-" + fieldDay
       queryData.timeUnit = fieldData.timeUnit || "date"
-      queryData.category[0].name = fieldData.category || options[0]
-      queryData.category[1].name = fieldData.category2
-      queryData.category[2].name = thirdMenu
 
       queryData.category[0].param.length = 0;
-      queryData.category[1].param.length = 0;
-      queryData.category[2].param.length = 0;
-      queryData.category[0].param.push(checkParam(queryTemplete.category[0].name))
-      queryData.category[1].param.push(checkParam(fieldData.category2))
-      queryData.category[2].param.push(checkParam(thirdMenu))
+      if(secondMenu !== '2분류'){ 
+         if(thirdMenu !== '3분류'){    //3분류까지 선택됐을 때
+            queryData.category[0].name = thirdMenu
+            queryData.category[0].param.push(checkParam(thirdMenu))
+         }
+         else{    //2분류까지 선택됐을 때
+            queryData.category[0].name = fieldData.category2
+            queryData.category[0].param.push(checkParam(fieldData.category2))
+         }
+      }
+      else {   //1분류만 선택됐을 때
+         queryData.category[0].name = fieldData.category || options[0]
+         queryData.category[0].param.push(checkParam(queryTemplete.category[0].name))
+      }
+      
       queryData.device = deviceChange(fieldData.device)
       queryData.gender = genderChange(fieldData.gender)
       queryData.ages.length = 0;
@@ -423,15 +433,17 @@ const App = () => {
          setPlotConfig(produce(plotConfig, draft => {
             draft.data = []
             draft.xAxis = {}
+            //draft.tooltip = {}
          
          // 3분류 클릭량 추이
-         for(var i=0; i<response.data.results[2].data.length; i++) {
+         for(var i=0; i<response.data.results[0].data.length; i++) {
             const plotInfo = {}
-            plotInfo.period = response.data.results[2].data[i].period
-            plotInfo.ratio = response.data.results[2].data[i].ratio
+            plotInfo.period = response.data.results[0].data[i].period
+            plotInfo.ratio = response.data.results[0].data[i].ratio
             draft.data.push(plotInfo);
          } 
-         draft.xAxis.tickCount = response.data.results[2].data.length
+         //draft.tooltip.name = response.data.results[0].title
+         draft.xAxis.tickCount = response.data.results[0].data.length
          }))
       })
       .catch((error) => {console.log(error)
@@ -675,6 +687,7 @@ const App = () => {
    <br/>
       </Form> 
    <br/>
+      <dir>  클릭량 추이 </dir>
       <Line {...plotConfig} />
       </>
    );
